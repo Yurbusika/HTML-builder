@@ -1,10 +1,12 @@
 const path = require('path');
 const fsPromise = require('fs/promises');
-const secretPath = path.join(__dirname, 'secret-folder');
 
 async function parseFiles() {
   try {
-    const files = await fsPromise.readdir(secretPath, { withFileTypes: true });
+    const files = await fsPromise.readdir(
+      path.join(__dirname, 'secret-folder'),
+      { withFileTypes: true },
+    );
     for (const file of files) {
       if (file.isFile()) {
         const indexOfPoint = file.name.indexOf('.');
