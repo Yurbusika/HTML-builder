@@ -33,6 +33,11 @@ async function buildPage() {
       path.join(__dirname, 'assets'),
       { recursive: true, withFileTypes: true },
     );
+    await fsPromise.rm(path.join(__dirname, 'project-dist', 'assets'), {
+      recursive: true,
+      force: true,
+    });
+
     for (const dir of assetsFiles) {
       if (dir.isDirectory()) {
         const pathDirSrc = path.join(__dirname, 'assets', dir.name);
@@ -42,7 +47,10 @@ async function buildPage() {
           'assets',
           dir.name,
         );
-        await fsPromise.mkdir(pathDirCopy, { recursive: true });
+
+        await fsPromise.mkdir(pathDirCopy, {
+          recursive: true,
+        });
         const dirFiles = await fsPromise.readdir(pathDirSrc, {
           withFileTypes: true,
         });
@@ -57,6 +65,7 @@ async function buildPage() {
     }
 
     const styles = await fsPromise.readdir(path.join(__dirname, 'styles'));
+    let bundle = '';
     for (const styleFile of styles) {
       const indexOfPoint = styleFile.indexOf('.');
       const fileExtension = styleFile.slice(indexOfPoint + 1);
@@ -64,11 +73,12 @@ async function buildPage() {
         const data = await fsPromise.readFile(
           path.join(__dirname, 'styles', styleFile),
         );
-        fsPromise.appendFile(
-          path.join(__dirname, 'project-dist', 'style.css'),
-          data,
-        );
+        bundle += data + '\n';
       }
+      fsPromise.writeFile(
+        path.join(__dirname, 'project-dist', 'style.css'),
+        bundle,
+      );
     }
   } catch (err) {
     console.error(err);
