@@ -10,12 +10,12 @@ stdin.on('data', (chunk) => {
 
   if (strChunk === 'exit') {
     stdout.write('Goodbye!\n');
-    process.exit(1);
+    process.exit(0);
   }
   output.write(chunk);
 });
 
 process.on('SIGINT', () => {
   stdout.write('\nGoodbye!\n');
-  process.exit(1);
+  process.exit(0);
 });
